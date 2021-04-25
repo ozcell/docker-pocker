@@ -34,7 +34,7 @@ RUN echo ${DOCKERPASS} | sudo -S apt-get update --fix-missing && \
 
 # install anaconda
 #RUN wget --quiet https://repo.anaconda.com/archive/Anaconda3-2020.11-Linux-x86_64.sh -O ~/anaconda.sh && \
-RUN wget --quiet https://repo.anaconda.com/archive/Anaconda3-2020.07-Linux-x86_64.sh -O ~/anaconda.sh && \
+RUN wget --quiet https://repo.anaconda.com/archive/Anaconda3-2019.07-Linux-x86_64.sh -O ~/anaconda.sh && \
     /bin/bash ~/anaconda.sh -b -p $HOME/conda && \
     rm ~/anaconda.sh && \
     echo ${DOCKERPASS} | sudo -S ln -s $HOME/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh && \
