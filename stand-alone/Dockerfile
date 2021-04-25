@@ -1,7 +1,7 @@
 ######################################## MAIN ########################################
 # install anaconda, pytorch
 ARG UBUNTU_VERSION=18.04
-FROM nvidia/cuda:10.2-devel-ubuntu${UBUNTU_VERSION}
+FROM nvidia/cuda:10.2-runtime-ubuntu${UBUNTU_VERSION}
 
 ARG DOCKERUSER=user
 ARG DOCKERPASS=pass
