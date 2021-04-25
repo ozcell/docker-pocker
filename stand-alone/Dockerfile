@@ -1,7 +1,7 @@
 ######################################## MAIN ########################################
 # install anaconda, pytorch
 ARG UBUNTU_VERSION=16.04
-FROM nvidia/cuda:10.2-devel-ubuntu${UBUNTU_VERSION}
+FROM nvidia/cuda:9.0-base-ubuntu${UBUNTU_VERSION}
 
 ARG DOCKERUSER=user
 ARG DOCKERPASS=pass
