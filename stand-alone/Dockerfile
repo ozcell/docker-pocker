@@ -92,11 +92,11 @@ EXPOSE 6006
 #    echo ${DOCKERPASS} | sudo -S apt-get install libnvinfer4=4.1.2-1+cuda9.0
 
 # Install TensorFlow GPU version.
-RUN pip --no-cache-dir install "tensorflow>=1.15,<2.0"
-RUN pip --no-cache-dir install --upgrade tensorflow-hub
+#RUN pip --no-cache-dir install "tensorflow>=1.15,<2.0"
+#RUN pip --no-cache-dir install --upgrade tensorflow-hub
 
 # For CUDA profiling, TensorFlow requires CUPTI.
-ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda/extras/CUPTI/lib64
+#ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda/extras/CUPTI/lib64
 # <---- here
 ##################################### TENSORFLOW #####################################
 
