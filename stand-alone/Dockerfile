@@ -53,7 +53,7 @@ RUN echo ${DOCKERPASS} | sudo -S apt-get install -y curl grep sed dpkg && \
 #install pytorch, torchvision torchaudio
 RUN pip --no-cache-dir install torch==1.8.1+cu111 torchvision==0.9.1+cu111 torchaudio==0.8.1 -f https://download.pytorch.org/whl/torch_stable.html
 RUN pip --no-cache-dir install tensorboardX
-RUN pip --no-cache-dir install mpi4py
+#RUN pip --no-cache-dir install mpi4py
 
 RUN echo 'for d in $HOME/git/*; do export PYTHONPATH="$PYTHONPATH:$d"; done' >> $HOME/.bashrc
 ######################################## MAIN ########################################
