@@ -1,7 +1,7 @@
 ######################################## MAIN ########################################
-# install anaconda, gym, mujoco, pytorch
-ARG UBUNTU_VERSION=16.04
-FROM nvidia/cuda:9.0-base-ubuntu${UBUNTU_VERSION}
+# install anaconda, pytorch
+ARG UBUNTU_VERSION=18.04
+FROM nvidia/cuda:11.1.0-devel-ubuntu${UBUNTU_VERSION}
 
 ARG DOCKERUSER=user
 ARG DOCKERPASS=pass
@@ -29,10 +29,11 @@ WORKDIR $HOME
 # install some common tools
 RUN echo ${DOCKERPASS} | sudo -S apt-get update --fix-missing && \ 
     echo ${DOCKERPASS} | sudo -S apt-get install -y wget bzip2 ca-certificates \
-    libglib2.0-0 libxext6 libsm6 libxrender1 git mercurial subversion nano
+    libglib2.0-0 libxext6 libsm6 libxrender1 git mercurial subversion nano \
+    unzip rsync pkg-config software-properties-common cmake swig xvfb ffmpeg unzip
 
 # install anaconda
-RUN wget --quiet https://repo.anaconda.com/archive/Anaconda3-5.2.0-Linux-x86_64.sh -O ~/anaconda.sh && \
+RUN wget --quiet https://repo.anaconda.com/archive/Anaconda3-2020.11-Linux-x86_64.sh -O ~/anaconda.sh && \
     /bin/bash ~/anaconda.sh -b -p $HOME/conda && \
     rm ~/anaconda.sh && \
     echo ${DOCKERPASS} | sudo -S ln -s $HOME/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh && \
@@ -47,33 +48,10 @@ RUN echo ${DOCKERPASS} | sudo -S apt-get install -y curl grep sed dpkg && \
     rm tini.deb && \
     echo ${DOCKERPASS} | sudo -S apt-get clean
 
-# install OpenAI gym
-# if 16.04
-RUN echo ${DOCKERPASS} | sudo -S apt-get install -y python-pyglet python3-opengl zlib1g-dev libjpeg-dev patchelf \
-        cmake swig libboost-all-dev libsdl2-dev libosmesa6-dev xvfb ffmpeg unzip libglew-dev
+#RUN echo ${DOCKERPASS} | sudo -S apt-get install -y cmake swig xvfb ffmpeg unzip
 
-# if 18.04
-#RUN apt-get install -y python3-dev zlib1g-dev libjpeg-dev cmake swig \
-#    python-pyglet python3-opengl libboost-all-dev libsdl2-dev \
-#    libosmesa6-dev patchelf ffmpeg xvfb unzip
-
-#mujoco binaries and the licence and env variables
-RUN wget --quiet https://www.roboti.us/download/mjpro150_linux.zip -O ./temp.zip && \
-    unzip temp.zip -d $HOME/.mujoco && rm temp.zip
-COPY ./src/mujoco/mjkey.txt $HOME/.mujoco
-RUN echo ${DOCKERPASS} | sudo -S chown -R ${DOCKERUSER} $HOME/.mujoco
-ENV MUJOCO_PY_MJKEY_PATH=$HOME/.mujoco/mjkey.txt \
-    MUJOCO_PY_MJPRO_PATH=$HOME/.mujoco/mjpro150/ \
-    LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/.mujoco/mjpro150/bin \
-    CPATH=$CPATH:$HOME/.mujoco/mjpro150/include \
-    PATH=$PATH:$HOME/.mujoco/mjpro150/bin \
-    LIBRARY_PATH=$LIBRARY_PATH:$HOME/.mujoco/mjpro150/bin \
-    LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libGLEW.so
-
-#install mujoco-py, gym, pytorch, torchvision
-RUN pip --no-cache-dir install mujoco-py
-RUN pip --no-cache-dir install 'gym[all]'
-RUN pip --no-cache-dir install https://download.pytorch.org/whl/cu90/torch-0.4.1-cp36-cp36m-linux_x86_64.whl torchvision
+#install pytorch, torchvision torchaudio
+RUN pip --no-cache-dir install torch==1.8.1+cu111 torchvision==0.9.1+cu111 torchaudio==0.8.1 -f https://download.pytorch.org/whl/torch_stable.html
 RUN pip --no-cache-dir install tensorboardX
 RUN pip --no-cache-dir install mpi4py
 
@@ -85,40 +63,36 @@ RUN echo 'for d in $HOME/git/*; do export PYTHONPATH="$PYTHONPATH:$d"; done' >> 
 EXPOSE 6006
 
 #Pick up some TF dependencies
-RUN echo ${DOCKERPASS} | sudo -S apt-get update && \ 
-    echo ${DOCKERPASS} | sudo -S apt-get install -y --no-install-recommends \
-        cuda-command-line-tools-9-0 \
-        cuda-cublas-9-0 \
-        cuda-cufft-9-0 \
-        cuda-curand-9-0 \
-        cuda-cusolver-9-0 \
-        cuda-cusparse-9-0 \
-        libcudnn7=7.2.1.38-1+cuda9.0 \
-        libnccl2=2.2.13-1+cuda9.0 \
-        libfreetype6-dev \
-        libhdf5-serial-dev \
-        libpng12-dev \
-        libzmq3-dev \
-        pkg-config \
-        rsync \
-        software-properties-common \
-        unzip \
-        && \
-    echo ${DOCKERPASS} | sudo -S apt-get clean && \
-    echo ${DOCKERPASS} | sudo -S rm -rf /var/lib/apt/lists/*
+#RUN echo ${DOCKERPASS} | sudo -S apt-get update && \ 
+#    echo ${DOCKERPASS} | sudo -S apt-get install -y --no-install-recommends \
+#        cuda-command-line-tools-9-0 \
+#        cuda-cublas-9-0 \
+#        cuda-cufft-9-0 \
+#        cuda-curand-9-0 \
+#        cuda-cusolver-9-0 \
+#        cuda-cusparse-9-0 \
+#        libcudnn7=7.2.1.38-1+cuda9.0 \
+#        libnccl2=2.2.13-1+cuda9.0 \
+#        libfreetype6-dev \
+#        libhdf5-serial-dev \
+#        libpng12-dev \
+#        libzmq3-dev \
+#        pkg-config \
+#        rsync \
+#        software-properties-common \
+#        unzip \
+#        && \
+ #   echo ${DOCKERPASS} | sudo -S apt-get clean && \
+ #   echo ${DOCKERPASS} | sudo -S rm -rf /var/lib/apt/lists/*
 
-RUN echo ${DOCKERPASS} | sudo -S apt-get update && \
-    echo ${DOCKERPASS} | sudo -S apt-get install nvinfer-runtime-trt-repo-ubuntu1604-4.0.1-ga-cuda9.0 && \
-    echo ${DOCKERPASS} | sudo -S apt-get update && \
-    echo ${DOCKERPASS} | sudo -S apt-get install libnvinfer4=4.1.2-1+cuda9.0
+#RUN echo ${DOCKERPASS} | sudo -S apt-get update && \
+#    echo ${DOCKERPASS} | sudo -S apt-get install nvinfer-runtime-trt-repo-ubuntu1604-4.0.1-ga-cuda9.0 && \
+#    echo ${DOCKERPASS} | sudo -S apt-get update && \
+#    echo ${DOCKERPASS} | sudo -S apt-get install libnvinfer4=4.1.2-1+cuda9.0
 
 # Install TensorFlow GPU version.
-RUN pip --no-cache-dir install tensorflow-gpu
-# Install openai baselines
-WORKDIR $HOME/conda/lib/python3.6/site-packages/
-RUN git clone https://github.com/openai/baselines.git && cd baselines && \
-    pip --no-cache-dir install -e .
-WORKDIR $HOME
+RUN pip --no-cache-dir install "tensorflow>=1.15,<2.0"
+RUN pip --no-cache-dir install --upgrade tensorflow-hub
 
 # For CUDA profiling, TensorFlow requires CUPTI.
 ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda/extras/CUPTI/lib64
