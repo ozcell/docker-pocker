@@ -27,27 +27,27 @@ ENV DOCKERUSER=${DOCKERUSER} \
 WORKDIR $HOME
 
 # install some common tools
-RUN echo ${DOCKERPASS} | sudo -S apt-get update --fix-missing && \ 
-    echo ${DOCKERPASS} | sudo -S apt-get install -y wget bzip2 ca-certificates \
-    libglib2.0-0 libxext6 libsm6 libxrender1 git mercurial subversion nano \
-    unzip rsync pkg-config software-properties-common cmake swig xvfb ffmpeg unzip
+# RUN echo ${DOCKERPASS} | sudo -S apt-get update --fix-missing && \ 
+#     echo ${DOCKERPASS} | sudo -S apt-get install -y wget bzip2 ca-certificates \
+#     libglib2.0-0 libxext6 libsm6 libxrender1 git mercurial subversion nano \
+#     unzip rsync pkg-config software-properties-common cmake swig xvfb ffmpeg unzip
 
 # install anaconda
 #RUN wget --quiet https://repo.anaconda.com/archive/Anaconda3-2020.11-Linux-x86_64.sh -O ~/anaconda.sh && \
-RUN wget --quiet https://repo.anaconda.com/archive/Anaconda3-2019.07-Linux-x86_64.sh -O ~/anaconda.sh && \
-    /bin/bash ~/anaconda.sh -b -p $HOME/conda && \
-    rm ~/anaconda.sh && \
-    echo ${DOCKERPASS} | sudo -S ln -s $HOME/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh && \
-    echo ". $HOME/conda/etc/profile.d/conda.sh" >> $HOME/.bashrc && \
-    echo "conda activate base" >> $HOME/.bashrc
+# RUN wget --quiet https://repo.anaconda.com/archive/Anaconda3-2019.07-Linux-x86_64.sh -O ~/anaconda.sh && \
+#     /bin/bash ~/anaconda.sh -b -p $HOME/conda && \
+#     rm ~/anaconda.sh && \
+#     echo ${DOCKERPASS} | sudo -S ln -s $HOME/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh && \
+#     echo ". $HOME/conda/etc/profile.d/conda.sh" >> $HOME/.bashrc && \
+#     echo "conda activate base" >> $HOME/.bashrc
 
 # install tini
-RUN echo ${DOCKERPASS} | sudo -S apt-get install -y curl grep sed dpkg && \
-    TINI_VERSION=`curl https://github.com/krallin/tini/releases/latest | grep -o "/v.*\"" | sed 's:^..\(.*\).$:\1:'` && \
-    curl -L "https://github.com/krallin/tini/releases/download/v${TINI_VERSION}/tini_${TINI_VERSION}.deb" > tini.deb && \
-    echo ${DOCKERPASS} | sudo -S dpkg -i tini.deb && \
-    rm tini.deb && \
-    echo ${DOCKERPASS} | sudo -S apt-get clean
+# RUN echo ${DOCKERPASS} | sudo -S apt-get install -y curl grep sed dpkg && \
+#     TINI_VERSION=`curl https://github.com/krallin/tini/releases/latest | grep -o "/v.*\"" | sed 's:^..\(.*\).$:\1:'` && \
+#     curl -L "https://github.com/krallin/tini/releases/download/v${TINI_VERSION}/tini_${TINI_VERSION}.deb" > tini.deb && \
+#     echo ${DOCKERPASS} | sudo -S dpkg -i tini.deb && \
+#     rm tini.deb && \
+#     echo ${DOCKERPASS} | sudo -S apt-get clean
 
 #RUN echo ${DOCKERPASS} | sudo -S apt-get install -y cmake swig xvfb ffmpeg unzip
 
@@ -105,67 +105,67 @@ EXPOSE 6006
 ## Connection ports for controlling the UI:
 # VNC port:5901
 # noVNC webport, connect via http://IP:6901/?password=vncpassword
-ENV DISPLAY=:1 \
-    VNC_PORT=5901 \
-    NO_VNC_PORT=6901 \
-    JUPYTER_PORT=8888
-EXPOSE $VNC_PORT $NO_VNC_PORT $JUPYTER_PORT
+# ENV DISPLAY=:1 \
+#     VNC_PORT=5901 \
+#     NO_VNC_PORT=6901 \
+#     JUPYTER_PORT=8888
+# EXPOSE $VNC_PORT $NO_VNC_PORT $JUPYTER_PORT
 
-### Envrionment config
-ENV TERM=xterm \
-    STARTUPDIR=$HOME/gui \
-    NO_VNC_HOME=$HOME/gui/noVNC \
-    DEBIAN_FRONTEND=noninteractive \
-    VNC_COL_DEPTH=24 \
-    VNC_RESOLUTION=${RESOLUTION} \
-    VNC_PW=${DOCKERPASS} \
-    VNC_VIEW_ONLY=false
+# ### Envrionment config
+# ENV TERM=xterm \
+#     STARTUPDIR=$HOME/gui \
+#     NO_VNC_HOME=$HOME/gui/noVNC \
+#     DEBIAN_FRONTEND=noninteractive \
+#     VNC_COL_DEPTH=24 \
+#     VNC_RESOLUTION=${RESOLUTION} \
+#     VNC_PW=${DOCKERPASS} \
+#     VNC_VIEW_ONLY=false
 
-### Add all install scripts for further steps
-ADD ./src/common/xfce/ $HOME/
-RUN echo ${DOCKERPASS} | sudo -S chown -R ${DOCKERUSER} $HOME/.config $HOME/Desktop 
-ADD ./src/common/scripts $STARTUPDIR/
-RUN echo ${DOCKERPASS} | sudo -S chown -R ${DOCKERUSER} $STARTUPDIR/
+# ### Add all install scripts for further steps
+# ADD ./src/common/xfce/ $HOME/
+# RUN echo ${DOCKERPASS} | sudo -S chown -R ${DOCKERUSER} $HOME/.config $HOME/Desktop 
+# ADD ./src/common/scripts $STARTUPDIR/
+# RUN echo ${DOCKERPASS} | sudo -S chown -R ${DOCKERUSER} $STARTUPDIR/
 
-### Install some common tools
-RUN echo ${DOCKERPASS} | sudo -S apt-get update && \
-    echo ${DOCKERPASS} | sudo -S apt-get install -y vim wget net-tools locales bzip2 python-numpy && \
-    echo ${DOCKERPASS} | sudo -S apt-get clean -y && \
-    echo ${DOCKERPASS} | sudo -S locale-gen en_GB.UTF-8 
+# ### Install some common tools
+# RUN echo ${DOCKERPASS} | sudo -S apt-get update && \
+#     echo ${DOCKERPASS} | sudo -S apt-get install -y vim wget net-tools locales bzip2 python-numpy && \
+#     echo ${DOCKERPASS} | sudo -S apt-get clean -y && \
+#     echo ${DOCKERPASS} | sudo -S locale-gen en_GB.UTF-8 
 
-ENV LANG=en_GB.UTF-8 \ 
-    LANGUAGE=en_GB:en \
-    LC_ALL=en_GB.UTF-8 
+# ENV LANG=en_GB.UTF-8 \ 
+#     LANGUAGE=en_GB:en \
+#     LC_ALL=en_GB.UTF-8 
 
-### Install custom fonts
-RUN echo ${DOCKERPASS} | sudo -S apt-get install -y ttf-wqy-zenhei
+# ### Install custom fonts
+# RUN echo ${DOCKERPASS} | sudo -S apt-get install -y ttf-wqy-zenhei
 
-### Install xvnc-server & noVNC - HTML5 based VNC viewer
-USER 0
-RUN wget -qO- https://dl.bintray.com/tigervnc/stable/tigervnc-1.9.0.x86_64.tar.gz | tar xz --strip 1 -C /
-USER $DOCKERUSER 
+# ### Install xvnc-server & noVNC - HTML5 based VNC viewer
+# USER 0
+# RUN wget -qO- https://dl.bintray.com/tigervnc/stable/tigervnc-1.9.0.x86_64.tar.gz | tar xz --strip 1 -C /
+# USER $DOCKERUSER 
 
-RUN mkdir -p $NO_VNC_HOME/utils/websockify && \
-    wget -qO- https://github.com/novnc/noVNC/archive/v1.0.0.tar.gz | tar xz --strip 1 -C $NO_VNC_HOME && \
-    wget -qO- https://github.com/novnc/websockify/archive/v0.6.1.tar.gz | tar xz --strip 1 -C $NO_VNC_HOME/utils/websockify && \
-    chmod +x -v $NO_VNC_HOME/utils/*.sh && \
-    ln -s $NO_VNC_HOME/vnc_lite.html $NO_VNC_HOME/index.html
+# RUN mkdir -p $NO_VNC_HOME/utils/websockify && \
+#     wget -qO- https://github.com/novnc/noVNC/archive/v1.0.0.tar.gz | tar xz --strip 1 -C $NO_VNC_HOME && \
+#     wget -qO- https://github.com/novnc/websockify/archive/v0.6.1.tar.gz | tar xz --strip 1 -C $NO_VNC_HOME/utils/websockify && \
+#     chmod +x -v $NO_VNC_HOME/utils/*.sh && \
+#     ln -s $NO_VNC_HOME/vnc_lite.html $NO_VNC_HOME/index.html
 
-### Install chrome browser
-RUN echo ${DOCKERPASS} | sudo -S apt-get update && \
-    echo ${DOCKERPASS} | sudo -S apt-get install -y chromium-browser chromium-browser-l10n chromium-codecs-ffmpeg && \
-    echo ${DOCKERPASS} | sudo -S apt-get clean -y && \
-    echo ${DOCKERPASS} | sudo -S ln -s /usr/bin/chromium-browser /usr/bin/google-chrome && \
-    echo "CHROMIUM_FLAGS='--no-sandbox --start-maximized --user-data-dir'" > $HOME/.chromium-browser.init
+# ### Install chrome browser
+# RUN echo ${DOCKERPASS} | sudo -S apt-get update && \
+#     echo ${DOCKERPASS} | sudo -S apt-get install -y chromium-browser chromium-browser-l10n chromium-codecs-ffmpeg && \
+#     echo ${DOCKERPASS} | sudo -S apt-get clean -y && \
+#     echo ${DOCKERPASS} | sudo -S ln -s /usr/bin/chromium-browser /usr/bin/google-chrome && \
+#     echo "CHROMIUM_FLAGS='--no-sandbox --start-maximized --user-data-dir'" > $HOME/.chromium-browser.init
 
-### Install xfce UI
-USER 0
-RUN apt-get update && \
-    apt-get install -y supervisor xfce4 xfce4-terminal xterm && \
-    apt-get purge -y pm-utils xscreensaver* && \
-    apt-get clean -y
-USER $DOCKERUSER 
+# ### Install xfce UI
+# USER 0
+# RUN apt-get update && \
+#     apt-get install -y supervisor xfce4 xfce4-terminal xterm && \
+#     apt-get purge -y pm-utils xscreensaver* && \
+#     apt-get clean -y
+# USER $DOCKERUSER 
 ######################################## GUI #########################################
 
-ENTRYPOINT [ "/usr/bin/tini", "--" ]
+#ENTRYPOINT [ "/usr/bin/tini", "--" ]
 CMD [ "/bin/bash" ]
