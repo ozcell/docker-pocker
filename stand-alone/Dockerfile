@@ -52,7 +52,8 @@ RUN echo ${DOCKERPASS} | sudo -S apt-get install -y curl grep sed dpkg && \
 #RUN echo ${DOCKERPASS} | sudo -S apt-get install -y cmake swig xvfb ffmpeg unzip
 
 #install pytorch, torchvision torchaudio
-RUN pip --no-cache-dir install torch==1.8.1+cu111 torchvision==0.9.1+cu111 torchaudio==0.8.1 -f https://download.pytorch.org/whl/torch_stable.html
+#RUN pip --no-cache-dir install torch==1.8.1+cu111 torchvision==0.9.1+cu111 torchaudio==0.8.1 -f https://download.pytorch.org/whl/torch_stable.html
+RUN pip --no-cache-dir install torch torchvision torchaudio
 RUN pip --no-cache-dir install tensorboardX
 #RUN pip --no-cache-dir install mpi4py
 
