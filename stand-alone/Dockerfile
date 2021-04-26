@@ -72,15 +72,15 @@ RUN echo ${DOCKERPASS} | sudo -S apt-get update && \
     echo ${DOCKERPASS} | sudo -S apt-get install -y --no-install-recommends \
         build-essential \
         cuda-command-line-tools-10-0 \
-        #cuda-cublas-${CUDA/./-} \
-        #cuda-cufft-${CUDA/./-} \       
-        #cuda-curand-${CUDA/./-} \        
-        #cuda-cusolver-${CUDA/./-} \        
-        #cuda-cusparse-${CUDA/./-} \  
-        #libcudnn7=${CUDNN}+cuda${CUDA} \
-        #libfreetype6-dev \       
-        #libhdf5-serial-dev \         
-        #libzmq3-dev \        
+        cuda-cublas-10-0 \
+        cuda-cufft-10-0 \       
+        cuda-curand-10-0 \        
+        cuda-cusolver-10-0 \        
+        cuda-cusparse-10-0 \  
+        libcudnn7=${CUDNN}+cuda${CUDA} \
+        libfreetype6-dev \       
+        libhdf5-serial-dev \         
+        libzmq3-dev \        
         && \
     echo ${DOCKERPASS} | sudo -S apt-get clean && \
     echo ${DOCKERPASS} | sudo -S rm -rf /var/lib/apt/lists/*
@@ -91,9 +91,9 @@ RUN echo ${DOCKERPASS} | sudo -S apt-get update && \
     echo ${DOCKERPASS} | sudo -S apt-get clean && \
     echo ${DOCKERPASS} | sudo -S rm -rf /var/lib/apt/lists/*
 
-RUN echo ${DOCKERPASS} | sudo -S ln -s /usr/local/cuda/lib64/stubs/libcuda.so /usr/local/cuda/lib64/stubs/libcuda.so.1 \    
-        && echo "/usr/local/cuda/lib64/stubs" > /etc/ld.so.conf.d/z-cuda-stubs.conf \
-        && ldconfig
+RUN echo ${DOCKERPASS} | sudo -S ln -s /usr/local/cuda/lib64/stubs/libcuda.so /usr/local/cuda/lib64/stubs/libcuda.so.1 &&\    
+    echo ${DOCKERPASS} | sudo -S echo "/usr/local/cuda/lib64/stubs" > /etc/ld.so.conf.d/z-cuda-stubs.conf &&\
+    echo ${DOCKERPASS} | sudo -S ldconfig
 # Install TensorFlow GPU version.
 RUN pip --no-cache-dir install "tensorflow-gpu>=1.15,<2.0"
 RUN pip --no-cache-dir install --upgrade tensorflow-hub
