@@ -71,16 +71,16 @@ ARG CUDNN=7.6.2.24-1
 RUN echo ${DOCKERPASS} | sudo -S apt-get update && \ 
     echo ${DOCKERPASS} | sudo -S apt-get install -y --no-install-recommends \
         build-essential \
-        cuda-command-line-tools-${CUDA/./-}  \
-        cuda-cublas-${CUDA/./-} \
-        cuda-cufft-${CUDA/./-} \       
-        cuda-curand-${CUDA/./-} \        
-        cuda-cusolver-${CUDA/./-} \        
-        cuda-cusparse-${CUDA/./-} \  
-        libcudnn7=${CUDNN}+cuda${CUDA} \
-        libfreetype6-dev \       
-        libhdf5-serial-dev \         
-        libzmq3-dev \        
+        cuda-command-line-tools-10-0 \
+        #cuda-cublas-${CUDA/./-} \
+        #cuda-cufft-${CUDA/./-} \       
+        #cuda-curand-${CUDA/./-} \        
+        #cuda-cusolver-${CUDA/./-} \        
+        #cuda-cusparse-${CUDA/./-} \  
+        #libcudnn7=${CUDNN}+cuda${CUDA} \
+        #libfreetype6-dev \       
+        #libhdf5-serial-dev \         
+        #libzmq3-dev \        
         && \
     echo ${DOCKERPASS} | sudo -S apt-get clean && \
     echo ${DOCKERPASS} | sudo -S rm -rf /var/lib/apt/lists/*
