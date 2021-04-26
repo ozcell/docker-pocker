@@ -87,9 +87,7 @@ RUN echo ${DOCKERPASS} | sudo -S apt-get update && \
          
  
 RUN echo ${DOCKERPASS} | sudo -S apt-get update && \
-    echo ${DOCKERPASS} | sudo -S apt-get install nvinfer-runtime-trt-repo-ubuntu1604-4.0.1-ga-cuda9.0 && \
-    echo ${DOCKERPASS} | sudo -S apt-get update && \
-    echo ${DOCKERPASS} | sudo -S apt-get install libnvinfer5=5.1.5-1+cuda${CUDA}
+    echo ${DOCKERPASS} | sudo -S apt-get install libnvinfer5=5.1.5-1+cuda${CUDA} \
     echo ${DOCKERPASS} | sudo -S apt-get clean && \
     echo ${DOCKERPASS} | sudo -S rm -rf /var/lib/apt/lists/*
 
