@@ -91,8 +91,8 @@ RUN echo ${DOCKERPASS} | sudo -S apt-get update && \
     echo ${DOCKERPASS} | sudo -S apt-get clean && \
     echo ${DOCKERPASS} | sudo -S rm -rf /var/lib/apt/lists/*
 
-RUN echo ${DOCKERPASS} | sudo -S ln -s /usr/local/cuda/lib64/stubs/libcuda.so /usr/local/cuda/lib64/stubs/libcuda.so.1 &&\    
-    echo ${DOCKERPASS} | sudo -S echo "/usr/local/cuda/lib64/stubs" > /etc/ld.so.conf.d/z-cuda-stubs.conf &&\
+RUN echo ${DOCKERPASS} | sudo -S ln -s /usr/local/cuda/lib64/stubs/libcuda.so /usr/local/cuda/lib64/stubs/libcuda.so.1 && \    
+    echo ${DOCKERPASS} | sudo -S echo "/usr/local/cuda/lib64/stubs" > /etc/ld.so.conf.d/z-cuda-stubs.conf && \
     echo ${DOCKERPASS} | sudo -S ldconfig
 # Install TensorFlow GPU version.
 RUN pip --no-cache-dir install "tensorflow-gpu>=1.15,<2.0"
