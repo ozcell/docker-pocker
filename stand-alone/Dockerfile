@@ -70,7 +70,7 @@ ARG CUDNN=7.6.2.24-1
 #Pick up some TF dependencies
 RUN echo ${DOCKERPASS} | sudo -S apt-get update && \ 
     echo ${DOCKERPASS} | sudo -S apt-get install -y --no-install-recommends \
-        build-essential 
+        build-essential \
         cuda-command-line-tools-${CUDA/./-}  \
         cuda-cublas-${CUDA/./-} \
         cuda-cufft-${CUDA/./-} \       
