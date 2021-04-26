@@ -65,34 +65,37 @@ RUN echo 'for d in $HOME/git/*; do export PYTHONPATH="$PYTHONPATH:$d"; done' >> 
 # <---- if tensorflow is not needed this part could be commented up to 'here' label
 EXPOSE 6006
 
+ARG CUDA=10.0
+ARG CUDNN=7.6.2.24-1
 #Pick up some TF dependencies
-#RUN echo ${DOCKERPASS} | sudo -S apt-get update && \ 
-#    echo ${DOCKERPASS} | sudo -S apt-get install -y --no-install-recommends \
-#        cuda-command-line-tools-9-0 \
-#        cuda-cublas-9-0 \
-#        cuda-cufft-9-0 \
-#        cuda-curand-9-0 \
-#        cuda-cusolver-9-0 \
-#        cuda-cusparse-9-0 \
-#        libcudnn7=7.2.1.38-1+cuda9.0 \
-#        libnccl2=2.2.13-1+cuda9.0 \
-#        libfreetype6-dev \
-#        libhdf5-serial-dev \
-#        libpng12-dev \
-#        libzmq3-dev \
-#        pkg-config \
-#        rsync \
-#        software-properties-common \
-#        unzip \
-#        && \
- #   echo ${DOCKERPASS} | sudo -S apt-get clean && \
- #   echo ${DOCKERPASS} | sudo -S rm -rf /var/lib/apt/lists/*
+RUN echo ${DOCKERPASS} | sudo -S apt-get update && \ 
+    echo ${DOCKERPASS} | sudo -S apt-get install -y --no-install-recommends \
+        build-essential 
+        cuda-command-line-tools-${CUDA/./-}  \
+        cuda-cublas-${CUDA/./-} \
+        cuda-cufft-${CUDA/./-} \       
+        cuda-curand-${CUDA/./-} \        
+        cuda-cusolver-${CUDA/./-} \        
+        cuda-cusparse-${CUDA/./-} \  
+        libcudnn7=${CUDNN}+cuda${CUDA} \
+        libfreetype6-dev \       
+        libhdf5-serial-dev \         
+        libzmq3-dev \        
+        && \
+    echo ${DOCKERPASS} | sudo -S apt-get clean && \
+    echo ${DOCKERPASS} | sudo -S rm -rf /var/lib/apt/lists/*
+         
+ 
+RUN echo ${DOCKERPASS} | sudo -S apt-get update && \
+    echo ${DOCKERPASS} | sudo -S apt-get install nvinfer-runtime-trt-repo-ubuntu1604-4.0.1-ga-cuda9.0 && \
+    echo ${DOCKERPASS} | sudo -S apt-get update && \
+    echo ${DOCKERPASS} | sudo -S apt-get install libnvinfer5=5.1.5-1+cuda${CUDA}
+    echo ${DOCKERPASS} | sudo -S apt-get clean && \
+    echo ${DOCKERPASS} | sudo -S rm -rf /var/lib/apt/lists/*
 
-#RUN echo ${DOCKERPASS} | sudo -S apt-get update && \
-#    echo ${DOCKERPASS} | sudo -S apt-get install nvinfer-runtime-trt-repo-ubuntu1604-4.0.1-ga-cuda9.0 && \
-#    echo ${DOCKERPASS} | sudo -S apt-get update && \
-#    echo ${DOCKERPASS} | sudo -S apt-get install libnvinfer4=4.1.2-1+cuda9.0
-
+RUN echo ${DOCKERPASS} | sudo -S ln -s /usr/local/cuda/lib64/stubs/libcuda.so /usr/local/cuda/lib64/stubs/libcuda.so.1 \    
+        && echo "/usr/local/cuda/lib64/stubs" > /etc/ld.so.conf.d/z-cuda-stubs.conf \
+        && ldconfig
 # Install TensorFlow GPU version.
 RUN pip --no-cache-dir install "tensorflow-gpu>=1.15,<2.0"
 RUN pip --no-cache-dir install --upgrade tensorflow-hub
